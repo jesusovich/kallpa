@@ -117,6 +117,11 @@ service:
     type: LoadBalancer
     # -- NodePort port number for Longhorn UI. When unspecified, Longhorn selects a free port between 30000 and 32767.
     nodePort: null
+    # -- local-dev Annotations y labels:
+    annotations:
+      tailscale.com/expose: "true"
+    labels:
+      tailscale.com/proxy-class: longhorn-nodeselector
   manager:
     # -- Service type for Longhorn Manager.
     type: ClusterIP
@@ -422,8 +427,6 @@ longhornUI:
   ## and uncomment this example block
   #  label-key1: "label-value1"
   #  label-key2: "label-value2"
-  serviceAnnotations:
-    tailscale.com/expose: "true"
 
 ingress:
   # -- Setting that allows Longhorn to generate ingress records for the Longhorn UI service.
