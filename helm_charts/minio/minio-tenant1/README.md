@@ -59,7 +59,6 @@ URL: https://min.io/docs/minio/kubernetes/upstream/operations/install-deploy-man
 ```
 helm install \
 --namespace minio-tenant1 \
---create-namespace \
 --values values.yaml \
 tenant1 minio-operator/tenant
 ```

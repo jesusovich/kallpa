@@ -317,9 +317,9 @@ tenant:
   # serviceMetadata allows passing additional labels and annotations to MinIO and Console specific
   # services created by the operator.
   serviceMetadata:
-    annotations:
+    consoleServiceAnnotations:
       tailscale.com/expose: "true"
-    # labels:
+    # consoleServiceLabels:
     #   tailscale.com/proxy-class: longhorn-nodeselector
   ###
   # Add environment variables to be set in MinIO container (https://github.com/minio/minio/tree/master/docs/config)
