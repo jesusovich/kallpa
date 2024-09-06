@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-tenant1-env-configuration
+  namespace: minio-tenant1
+type: Opaque
+data:
+  config.env: ZXhwb3J0IE1JTklPX1JPT1RfVVNFUj1taW5pbwpleHBvcnQgTUlOSU9fUk9PVF9QQVNTV09SRD1taW5pbzEyMwpleHBvcnQgTUlOSU9fU1RPUkFHRV9DTEFTU19TVEFOREFSRD1FQzozCmV4cG9ydCBNSU5JT19TVE9SQUdFX0NMQVNTX1JSUz1FQzoyCg==

@@ -1,0 +1,9 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: longhorn-nodeselector
+spec:
+  statefulSet:
+    pod:
+      nodeSelector:
+        longhorn: "true"
