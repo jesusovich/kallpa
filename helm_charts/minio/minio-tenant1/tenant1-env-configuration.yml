@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: minio-tenant1-env-configuration
+  name: tenant1-env-configuration
   namespace: minio-tenant1
 type: Opaque
 data:

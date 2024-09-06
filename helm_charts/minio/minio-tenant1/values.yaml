@@ -4,7 +4,7 @@ tenant:
   # The Tenant name
   #
   # Change this to match your preferred MinIO Tenant name.
-  name: minio-tenant1
+  name: tenant1
   ###
   # Specify the Operator container image to use for the deployment.
   # ``image.tag`` 
@@ -46,7 +46,7 @@ tenant:
   # The Kubernetes secret name that contains MinIO environment variable configurations.
   # The secret is expected to have a key named config.env containing environment variables exports.
   configuration:
-    name: minio-tenant1-env-configuration
+    name: tenant1-env-configuration
   ###
   # Root key for dynamically creating a secret for use with configuring root MinIO User
   # Specify the ``name`` and then a list of environment variables.

@@ -22,6 +22,6 @@ helm search repo minio-operato
 helm install \
   --namespace minio-operator \
   --create-namespace \
-  -f values.yaml \
+  --values values.yaml \
   operator minio-operator/operator
 ```
