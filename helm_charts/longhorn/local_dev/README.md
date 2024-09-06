@@ -4,54 +4,85 @@ Se usa longhorn para habilitar los volumes persistentes de los componentes de Ne
 
 ## Requisitos
 
-### 1. Copiar values.yaml
+### 1. Instalar NFSv4 en los nodes
 
-URLs: 
+Esto se requiere para los PVs tipo RWX.
 
-- https://github.com/longhorn/longhorn/tree/master
-- https://github.com/longhorn/longhorn/blob/master/chart/values.yaml
+URL: https://longhorn.io/docs/1.7.1/deploy/install/#installing-nfsv4-client
 
-Crear previamente el folder longhorn.
+## Editar Chart
+
+Tomar como referencia: https://longhorn.io/docs/1.7.1/deploy/install/install-with-helm/
+
+### 1. Copiar todo el repo localmente, se hará edicion de los templates.
+
+URL: https://github.com/longhorn/longhorn/tree/master
+
+Hacer las ediciones dentro de la carpeta longhorn
 
 ### 2. Editar values.yaml
 
+#### Instalar Longhorn en nodos específicos.
+
 ```
-...
-### Instalar Longhorn en nodos específicos.
 global:
   nodeSelector:
     longhorn: "true"
 ...
-### Instalar Longhorn en nodos específicos.
 defaultSettings:
   systemManagedComponentsNodeSelector: "longhorn:true"
-...
 ```
-### 3. Agregar Labels a los nodes
 
-Verificar los labels en ~/scripts/add-labels.sh.
-
-Label:
+#### Publicar Tailscale Apiserver y aplicar node selector.
 
 ```
-longhorn=true
+service:
+  ui:
+    type: LoadBalancer
+    labels:
+      tailscale.com/proxy-class: longhorn-nodeselector
+    annotations:
+      tailscale.com/expose: "true"
 ```
-### 4. Instalar NFSv4 en los nodes
+### 3. Editar templates/deployment-ui.yaml
 
-Esto se requiere para los PVs tipo RWX.
+Esto se debe a que los labels y annotations no están declarados en los templates del servicio.
 
-URL: https://longhorn.io/docs/1.7.0/deploy/install/#installing-nfsv4-client
-
+```
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    {{- with .Values.service.ui.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.ui.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+```
 ## Instalación
 
-### URL
+### 1. Agregar Labels a los nodes
 
-https://longhorn.io/docs/1.7.0/deploy/install/install-with-helm/
+Verificar los labels en `~/scripts/add-labels.sh`
 
-### Comandos
+Label: **longhorn=true**
+
+### 2. Aplicar tailscale proxyclass
+
+Esto es para que el pod de Tailscale que publica el servicio caiga también en los nodos de longhorn. 
+
+File ubicado en `local_dev/`
 
 ```
-helm repo add longhorn https://charts.longhorn.io
-helm repo update
-helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.7.0 -f values.yaml
+kubectl apply -f tailscale.yml
+```
+
+### 3. Instalar Helm Chart
+
+En este caso el repo es local. La instalación se hace fuera del folder de Longhorn.
+
+```
+helm install longhorn --namespace longhorn-system --create-namespace --version 1.7.1 ./longhorn
 ```

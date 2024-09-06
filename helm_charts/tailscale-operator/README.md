@@ -3,6 +3,7 @@
 Adicionalmente a la instalación de Tailscale en los nodos, se activa tailscale como operador en el cluster k8s. Esto sirve al momento:
 
 - Para que el APIserver se publique con una IP del dominio de Tailscale, así mantenemos la redundancia del API Server.
+- Para publicar los servicios tipo LoadBalancer. Con esto ya no se usaría MetalLB.
 
 ## Requisitos
 
@@ -49,13 +50,9 @@ Crear previamente el folder.
 ```
 #### Agregar Labels a los nodes
 
-Verificar los labels en ~/scripts/add-labels.sh.
+Verificar los labels en `~/scripts/add-labels.sh`
 
-Label:
-
-```
-tailscale-operator=true
-```
+Label: **tailscale-operator=true**
 
 ### 3. Agregar TAGs en los ACL's. Ya hecho. No repetir.
 
@@ -81,14 +78,15 @@ Se debe agregar el tag para el operator y el tag para el usuario cluster-admin.
 
 ### Comandos
 
+#### Agregar Repo
 ```
-# Agregar Repo
-
 helm repo add tailscale https://pkgs.tailscale.com/helmcharts
 helm repo update
+```
 
-# Instalar helm sobre folder tailscale-operator, verificar values.yaml
+#### Instalar helm sobre folder tailscale-operator, verificar values.yaml
 
+```
 helm upgrade \
   --install \
   tailscale-operator \
@@ -97,12 +95,62 @@ helm upgrade \
   --create-namespace \
   --wait \
   -f values.yaml
+```
 
-# Crear clusterrole cluster-admin
+#### Crear clusterrole cluster-admin
 
+```
 kubectl create clusterrolebinding tailnet-cluster-admin --group="tag:k8s-cluster-admin" --clusterrole=cluster-admin
+```
 
-# Habilitar kubeconfig apuntando a la nueva VIP
+#### Habilitar kubeconfig apuntando a la nueva VIP
 
+```
 tailscale configure kubeconfig tailscale-operator
+```
+
+## Publicación de Servicios
+
+Esto aplica para cada servicio, aquí un lineamiento general. Replicar la config en los Charts respectivos.
+
+URL: https://tailscale.com/kb/1439/kubernetes-operator-cluster-ingress
+
+### 1. Editar Annotation en Servicio LoadBalancer
+
+- Con esto es suficiente, el operator reconoce el annotation y automatiza las configuraciones para la publicación del servicio.
+- El operator crea un pod y un servicio adicional en el namespace de Tailscale.
+- el pod tiene el agente que se conecta al Tailnet de Tailscale. Se genera una nueva IP.
+
+```
+    annotations:
+      tailscale.com/expose: "true"
+```
+
+### 2. Aplicar NodeSelector a pod de Tailscale
+
+- El nuevo pod de Tailscale cae en cualquier lado, se aplica un nodeselector para ello.
+- Esto se hace generando un proxyclass que agrega el node selector.
+- Luego, en el servicio LoadBalancer principal se agrega un label, similar al annotation de arriba.
+
+#### Ejemplo con lo hecho para Longhorn
+
+ProxyClass Manifest
+
+```
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: longhorn-nodeselector
+spec:
+  statefulSet:
+    pod:
+      nodeSelector:
+        longhorn: "true"
+```
+
+Label en servicio LoadBalancer
+
+```
+    labels:
+      tailscale.com/proxy-class: longhorn-nodeselector
 ```
