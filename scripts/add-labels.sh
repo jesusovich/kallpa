@@ -4,7 +4,7 @@
 NODES=("k3s-master1" "k3s-master2" "k3s-master3")
 
 # Labels a aplicar
-LABELS=("nextcloud=true" "longhorn=true" "tailscale-operator=true")
+LABELS=("nextcloud=true" "longhorn=true" "tailscale-operator=true" "minio-operator=true")
 
 # Iterar sobre cada nodo
 for NODE in "${NODES[@]}"; do
