@@ -6,5 +6,7 @@ metadata:
 data:
   update-ca-certificates.sh: |
     #!/bin/bash
+    echo "Adjusting permissions..."
+    chmod -R 755 /etc/ssl/certs
     echo "Updating CA certificates..."
     update-ca-certificates
