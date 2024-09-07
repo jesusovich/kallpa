@@ -213,11 +213,6 @@ nextcloud:
   # Extra config files created in /var/www/html/config/
   # ref: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
   configs:    
-    disable-tls.config.php: |-
-      <?php
-      $CONFIG = array (
-        'verify_peer_off' => true,
-      );
     previews.config.php: |-
       <?php
       $CONFIG = array (
@@ -299,9 +294,9 @@ nextcloud:
   # Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
   # to NextCloud pods in Kubernetes. This can then be configured in External Storage
   extraVolumes:
-  #  - name: minio-ca-cert
-  #    secret:
-  #      secretName: minio-ca-cert
+    - name: minio-ca-cert
+      secret:
+        secretName: minio-ca-cert
   #  - name: update-ca-script
   #    configMap:
   #      name: update-ca-script
@@ -312,8 +307,9 @@ nextcloud:
   #      path: "/nextcloud_data"
   #      readOnly: false
   extraVolumeMounts:
-  #  - name: minio-ca-cert
-  #    mountPath: /usr/local/share/ca-certificates/minio
+    - name: minio-ca-cert
+      mountPath: /etc/ssl/certs/minio-ca.crt
+      subPath: minio-ca.crt
   #  - name: update-ca-script
   #    mountPath: /docker-entrypoint-hooks.d/before-starting/update-ca-certificates.sh
   #    subPath: update-ca-certificates.sh
