@@ -318,7 +318,11 @@ nextcloud:
   # Set securityContext parameters for the nextcloud CONTAINER only (will not affect nginx container).
   # For example, you may need to define runAsNonRoot directive
   securityContext:
-    runAsNonRoot: false
+    runAsUser: 33        # El usuario www-data en muchos sistemas es el UID 33
+    runAsGroup: 33       # Grupo www-data
+    fsGroup: 0           # Grupo root para permitir escritura en archivos de sistema
+    allowPrivilegeEscalation: true
+  #   runAsNonRoot: false
   #   runAsUser: 33
   #   runAsGroup: 33
   #   runAsNonRoot: true
