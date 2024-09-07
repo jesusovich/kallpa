@@ -50,7 +50,7 @@ Campos editados:
 - tenant.pool.size
 - tenant.pool.storageClassName
 - tenant.exposeServices.console
-- tenant.serviceMetadata.annotations
+- tenant.serviceMetadata.consoleServiceAnnotations
 
 ### Helm Chart
 
