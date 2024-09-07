@@ -125,9 +125,9 @@ nextcloud:
       # s3 endpoint to use; only required if you're not using AWS
       host: "minio.minio-tenant1.svc.cluster.local"
       # use TLS/SSL for S3 connections
-      ssl: true
+      ssl: false
       # default port that can be changed based on your object store, e.g. for minio, you can use 9000
-      port: "443"
+      port: "80"
       # this is the default in the nextcloud docs
       region: ""
       # required if using s3, the name of the bucket you'd like to use
@@ -294,31 +294,31 @@ nextcloud:
   # Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
   # to NextCloud pods in Kubernetes. This can then be configured in External Storage
   extraVolumes:
-    - name: minio-ca-cert
-      secret:
-        secretName: minio-ca-cert
-    - name: update-ca-script
-      configMap:
-        name: update-ca-script
-        defaultMode: 0777
+  #  - name: minio-ca-cert
+  #    secret:
+  #      secretName: minio-ca-cert
+  #  - name: update-ca-script
+  #    configMap:
+  #      name: update-ca-script
+  #      defaultMode: 0777
   #  - name: nfs
   #    nfs:
   #      server: "10.0.0.1"
   #      path: "/nextcloud_data"
   #      readOnly: false
   extraVolumeMounts:
-    - name: minio-ca-cert
-      mountPath: /usr/local/share/ca-certificates/minio
-    - name: update-ca-script
-      mountPath: /docker-entrypoint-hooks.d/before-starting/update-ca-certificates.sh
-      subPath: update-ca-certificates.sh
+  #  - name: minio-ca-cert
+  #    mountPath: /usr/local/share/ca-certificates/minio
+  #  - name: update-ca-script
+  #    mountPath: /docker-entrypoint-hooks.d/before-starting/update-ca-certificates.sh
+  #    subPath: update-ca-certificates.sh
   #  - name: nfs
   #    mountPath: "/legacy_data"
 
   # Set securityContext parameters for the nextcloud CONTAINER only (will not affect nginx container).
   # For example, you may need to define runAsNonRoot directive
   securityContext:
-    fsGroup: 0
+  #  fsGroup: 0
   #   runAsUser: 33
   #   runAsGroup: 33
   #   runAsNonRoot: true
