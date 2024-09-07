@@ -7,4 +7,4 @@ data:
   update-ca-certificates.sh: |
     #!/bin/bash
     echo "Updating CA certificates..."
-    sudo update-ca-certificates
+    update-ca-certificates
