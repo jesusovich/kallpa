@@ -309,7 +309,7 @@ nextcloud:
   extraVolumeMounts:
     - name: minio-ca-cert
       mountPath: /usr/local/share/ca-certificates/minio
-    - name: update-ca-script
+  #  - name: update-ca-script
   #    mountPath: /docker-entrypoint-hooks.d/before-starting/update-ca-certificates.sh
   #    subPath: update-ca-certificates.sh
   #  - name: nfs
