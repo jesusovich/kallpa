@@ -305,7 +305,6 @@ nextcloud:
   extraVolumeMounts:
     - name: minio-ca-cert
       mountPath: /usr/local/share/ca-certificates/minio
-        readOnly: true
   #  - name: nfs
   #    mountPath: "/legacy_data"
 
