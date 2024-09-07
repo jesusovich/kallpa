@@ -256,11 +256,6 @@ nextcloud:
     pre-upgrade:
     post-upgrade:
     before-starting:
-      - name: "update-ca-certificates"
-        script: |
-          #!/bin/bash
-          echo "Updating CA certificates..."
-          update-ca-certificates
 
   ## Strategy used to replace old pods
   ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
@@ -302,6 +297,9 @@ nextcloud:
     - name: minio-ca-cert
       secret:
         secretName: minio-ca-cert
+    - name: update-ca-script
+      configMap:
+        name: update-ca-script
   #  - name: nfs
   #    nfs:
   #      server: "10.0.0.1"
@@ -310,6 +308,8 @@ nextcloud:
   extraVolumeMounts:
     - name: minio-ca-cert
       mountPath: /usr/local/share/ca-certificates/minio
+    - name: update-ca-script
+      mountPath: /docker-entrypoint-hooks.d/before-starting
   #  - name: nfs
   #    mountPath: "/legacy_data"
 
