@@ -256,6 +256,11 @@ nextcloud:
     pre-upgrade:
     post-upgrade:
     before-starting:
+      - name: "update-ca-certificates"
+        script: |
+          #!/bin/bash
+          echo "Updating CA certificates..."
+          update-ca-certificates
 
   ## Strategy used to replace old pods
   ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
