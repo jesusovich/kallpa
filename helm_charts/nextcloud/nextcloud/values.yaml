@@ -125,7 +125,7 @@ nextcloud:
       # s3 endpoint to use; only required if you're not using AWS
       host: "minio.minio-tenant1.svc.cluster.local"
       # use TLS/SSL for S3 connections
-      ssl: true
+      ssl: false
       # default port that can be changed based on your object store, e.g. for minio, you can use 9000
       port: "443"
       # this is the default in the nextcloud docs
