@@ -15,7 +15,7 @@ fi
 
 # Usa scp para copiar el archivo .kube/config desde el master al deployer
 echo "Copiando el archivo .kube/config desde el master ($MASTER_IP) al deployer..."
-scp root@$MASTER_IP:$MASTER_KUBECONFIG $DEPLOYER_KUBECONFIG
+scp ubuntu@$MASTER_IP:$MASTER_KUBECONFIG $DEPLOYER_KUBECONFIG
 
 # Verifica si la copia fue exitosa
 if [ $? -eq 0 ]; then
