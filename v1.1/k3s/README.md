@@ -36,19 +36,12 @@ vi .ssh/authorized_keys
 ### 1. Descargar el Repo en el Deployer
 
 ```
-git clone https://github.com/k3s-io/k3s-ansible.git
+git clone https://github.com/jesusovich/kallpa.git
 ```
 
 > En este caso estoy copiando el contenido en el repo de Kallpa. También se dede agregar el file **inventory.yml**
 
 > Adicionalmente, el repo kallpa ya tiene guardado el inventory.yml, verificar previamente si existe el folder k3s-ansible. En caso no existiera crearlo de la siguiente manera: 
-
-```
-mkdir kallpa/k3s-ansible
-cp -r k3s-ansible kallpa/k3s-ansible
-cd kallpa/k3s-ansible
-vi inventory.yml
-```
 
 ### 3. Datos de inventory.yml
 
