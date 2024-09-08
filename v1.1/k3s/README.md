@@ -72,3 +72,17 @@ URL: https://github.com/k3s-io/k3s-ansible/blob/master/README.md
 ```
 ansible-playbook playbooks/site.yml -i inventory.yml
 ```
+
+### 5. Copiar kubeconfig del Master
+
+Correr script:
+
+```
+ubuntu@k3s-deployer:~/kallpa/v1.1/scripts$ ./copy-kubeconfig.sh 
+Ingresa la IP del master: 100.71.186.8
+Copiando el archivo .kube/config desde el master (100.71.186.8) al deployer...
+config                                                                                                                                                              100% 2953     1.2MB/s   00:00    
+El archivo .kube/config ha sido copiado exitosamente.
+Reemplazando la IP 127.0.0.1 por 100.71.186.8 en el archivo /home/ubuntu/.kube/config...
+La IP en el archivo .kube/config ha sido actualizada exitosamente.
+```
