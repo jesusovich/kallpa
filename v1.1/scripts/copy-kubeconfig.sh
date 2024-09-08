@@ -4,7 +4,7 @@
 read -p "Ingresa la IP del master: " MASTER_IP
 
 # Define la ruta del archivo .kube/config en el master y en el deployer
-MASTER_KUBECONFIG="/root/.kube/config"  # Puedes cambiar esta ruta si es diferente
+MASTER_KUBECONFIG="/ubuntu/.kube/config"  # Puedes cambiar esta ruta si es diferente
 DEPLOYER_KUBECONFIG="$HOME/.kube/config"
 
 # Verifica si la carpeta .kube existe en el deployer, de lo contrario la crea
