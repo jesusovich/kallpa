@@ -236,3 +236,9 @@ LABEL=RANCHER   /var/lib/rancher    ext4    defaults,nofail 0       2
 ```
 
 Luego un reboot
+
+## 7 Sudoers para ubuntu
+
+```
+echo "ubuntu ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ubuntu
+```

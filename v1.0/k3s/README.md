@@ -81,3 +81,5 @@ URL: https://github.com/k3s-io/k3s-ansible/blob/master/README.md
 ```
 ansible-playbook playbooks/site.yml -i inventory.yml
 ```
+## Post Instalación
+
