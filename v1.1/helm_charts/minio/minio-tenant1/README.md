@@ -33,7 +33,7 @@ cat config.env | base64
 Configurar el secret.
 
 ```
-kubectl apply -f minio-tenant1-env-configuration.yml
+kubectl apply -f tenant1-env-configuration.yml
 ```
 
 ### Values.yaml
