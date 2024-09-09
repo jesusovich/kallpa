@@ -129,9 +129,8 @@ En este caso `mmcblk0` es el microSD y `nvme0n1` es el disco adicional NVMe.
 
 Vamos a particionar el disco de tal formna con lo siguiente:
 
-1. Driver 1 de Minio. 400GB.
-2. Driver 2 de Minio. 400GB.
-3. Montaje para k3s. Restante.
+1. Montaje k3s local-path 800GB.
+2. Montaje k3s otros. Restante.
 
 ### Comandos
 
@@ -142,21 +141,19 @@ Welcome to fdisk (util-linux 2.39.3).
 Changes will remain in memory only, until you decide to write them.
 Be careful before using the write command.
 
-The device contains 'ext4' signature and it will be removed by a write command. See fdisk(8) man page and --wipe option for more details.
-
-Device does not contain a recognized partition table.
-Created a new DOS (MBR) disklabel with disk identifier 0xda8e44b4.
 
 Command (m for help): n
 Partition type
    p   primary (0 primary, 0 extended, 4 free)
    e   extended (container for logical partitions)
-Select (default p): p
-Partition number (1-4, default 1): 1
-First sector (2048-1953525167, default 2048): 
-Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-1953525167, default 1953525167): +400G
+Select (default p): 
 
-Created a new partition 1 of type 'Linux' and of size 400 GiB.
+Using default response p.
+Partition number (1-4, default 1): 
+First sector (2048-1953525167, default 2048): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-1953525167, default 1953525167): +800G
+
+Created a new partition 1 of type 'Linux' and of size 800 GiB.
 
 Command (m for help): n
 Partition type
@@ -166,23 +163,10 @@ Select (default p):
 
 Using default response p.
 Partition number (2-4, default 2): 
-First sector (838862848-1953525167, default 838862848): 
-Last sector, +/-sectors or +/-size{K,M,G,T,P} (838862848-1953525167, default 1953525167): +400G
-
-Created a new partition 2 of type 'Linux' and of size 400 GiB.
-
-Command (m for help): n
-Partition type
-   p   primary (2 primary, 0 extended, 2 free)
-   e   extended (container for logical partitions)
-Select (default p): 
-
-Using default response p.
-Partition number (3,4, default 3): 
 First sector (1677723648-1953525167, default 1677723648): 
 Last sector, +/-sectors or +/-size{K,M,G,T,P} (1677723648-1953525167, default 1953525167): 
 
-Created a new partition 3 of type 'Linux' and of size 131.5 GiB.
+Created a new partition 2 of type 'Linux' and of size 131.5 GiB.
 
 Command (m for help): w
 The partition table has been altered.
@@ -199,28 +183,31 @@ mmcblk0     179:0    0 119.1G  0 disk
 ├─mmcblk0p1 179:1    0   512M  0 part /boot/firmware
 └─mmcblk0p2 179:2    0 118.6G  0 part /
 nvme0n1     259:0    0 931.5G  0 disk 
-├─nvme0n1p1 259:1    0   400G  0 part 
-├─nvme0n1p2 259:2    0   400G  0 part 
-└─nvme0n1p3 259:3    0 131.5G  0 part 
+├─nvme0n1p1 259:1    0   800G  0 part 
+└─nvme0n1p2 259:2    0 131.5G  0 part 
+
 ```
 ## 6. Montaje para k3s
 
 ### Ubicación
 
-k3s guarda los archivos de configuración, data y backend etcd en `/var/lib/rancher`. Usaremos la partición `nvme0n1p3`para ello.
+- k3s guarda los archivos de configuración, data y backend etcd en `/var/lib/rancher`. Usaremos la partición `nvme0n1p2`para ello.
+- k3s local-path guarda los PV's en `/var/lib/rancher/storage`. Usaremos la partición `nvme0n1p1`para ello.
 
 ### Montaje
 
 #### Formato de disco
 
 ```
-sudo mkfs.ext4 /dev/nvme0n1p3
+sudo mkfs.xfs /dev/nvme0n1p1
+sudo mkfs.ext4 /dev/nvme0n1p2
 ```
 
 #### Crear Label
 
 ```
-sudo e2label /dev/nvme0n1p3 RANCHER
+sudo xfs_admin -L "K3S_VOLUMES" /dev/nvme0n1p1
+sudo e2label /dev/nvme0n1p2 K3S_SYSTEM
 ```
 
 #### Editar /etc/fstab
@@ -232,7 +219,8 @@ sudo vi /etc/fstab
 Agregar esta linea:
 
 ```
-LABEL=RANCHER   /var/lib/rancher    ext4    defaults,nofail 0       2
+LABEL=K3S_VOLUMES   /var/lib/rancher/k3s/storage    xfs    defaults,nofail 0       2
+LABEL=K3S_SYSTEM   /var/lib/rancher    ext4    defaults,nofail 0       2
 ```
 
 Luego un reboot
