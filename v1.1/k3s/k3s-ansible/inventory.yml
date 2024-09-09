@@ -13,7 +13,6 @@ k3s_cluster:
           --node-ip {{ ansible_host }}
           --flannel-iface tailscale0
           --disable=servicelb
-          --disable=local-storage
           --tls-san {{ ansible_host }}
 
     agent:

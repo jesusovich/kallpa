@@ -21,6 +21,15 @@ kubectl krew install directpv
 - los directpv nodes también lo del nodeSelector, deben de caer en los workers, no en los master.
 
 ```
+# Download DirectPV plugin.
+release=$(curl -sfL "https://api.github.com/repos/minio/directpv/releases/latest" | awk '/tag_name/ { print substr($2, 3, length($2)-4) }')
+curl -fLo kubectl-directpv https://github.com/minio/directpv/releases/download/v${release}/kubectl-directpv_${release}_linux_arm64
+
+# Make the binary executable.
+chmod a+x kubectl-directpv
+```
+
+```
 kubectl directpv install
 ```
 
