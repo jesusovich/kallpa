@@ -143,6 +143,15 @@ Ahora los discos deberían verse así:
 
 ```
 ubuntu@kallpa-master1:~$ lsblk
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+loop0         7:0    0  33.7M  1 loop /snap/snapd/21761
+mmcblk0     179:0    0 119.1G  0 disk 
+├─mmcblk0p1 179:1    0   512M  0 part /boot/firmware
+└─mmcblk0p2 179:2    0 118.6G  0 part /
+nvme0n1     259:0    0 931.5G  0 disk 
+├─nvme0n1p1 259:1    0   120G  0 part 
+├─nvme0n1p2 259:2    0   100G  0 part 
+└─nvme0n1p3 259:3    0 711.5G  0 part 
 
 ```
 ## 6. Montaje para k3s

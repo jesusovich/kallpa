@@ -57,10 +57,6 @@ git clone https://github.com/jesusovich/kallpa.git
 - Solo en servers.
 - Deshabilita el service load balancer por defecto. Se utiliza MetalLB en vez de ello.
 
-#### --disable=local-storage
-- Solo en servers.
-- Deshabilita el local-storage por defecto. Se utiliza Longhorn en vez de ello.
-
 #### --tls-san
 - Solo en servers.
 - Hay un error en la instalación, la IP de Tailscale debe estar dentro de las IP's permitidas para TLS.
