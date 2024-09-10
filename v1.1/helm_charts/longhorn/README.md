@@ -10,6 +10,24 @@ Esto se requiere para los PVs tipo RWX.
 
 URL: https://longhorn.io/docs/1.7.1/deploy/install/#installing-nfsv4-client
 
+Desde k3s-ansible:
+
+```
+ansible server -b -m shell -a "apt-get install nfs-common -y"
+```
+
+### . Instalar open-iscsi en los nodes
+
+Requisito para longhorn Managers
+
+URL: https://longhorn.io/docs/1.7.1/deploy/install/#installing-open-iscsi
+
+Desde k3s-ansible:
+
+```
+ansible server -b -m shell -a "apt-get install open-iscsi -y"
+```
+
 ## Editar Chart
 
 Tomar como referencia: https://longhorn.io/docs/1.7.1/deploy/install/install-with-helm/
