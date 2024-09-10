@@ -17,7 +17,7 @@ deploymentAnnotations: {}
 deploymentLabels: {}
 
 # Number of replicas to be deployed
-replicaCount: 1
+replicaCount: 2
 
 ## Allowing use of ingress controllers
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -377,14 +377,14 @@ nginx:
   #    value: ENV_VALUE
 
 internalDatabase:
-  enabled: true
+  enabled: false
   name: nextcloud
 
 ##
 ## External database configuration
 ##
 externalDatabase:
-  enabled: false
+  enabled: true
 
   ## Supported database engines: mysql or postgresql
   type: mysql
@@ -568,7 +568,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  accessMode: ReadWriteOnce
+  accessMode: ReadWriteMany
   size: 8Gi
 
   ## Use an additional pvc for the data directory rather than a subpath of the default PVC
