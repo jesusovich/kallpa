@@ -805,7 +805,7 @@ livenessProbe:
   enabled: true
   ## Initializing the database could take some time
   ##
-  initialDelaySeconds: 120
+  initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 1
   successThreshold: 1
@@ -821,7 +821,7 @@ livenessProbe:
 ##
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 30
+  initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 1
   successThreshold: 1
@@ -839,7 +839,7 @@ startupProbe:
   enabled: false
   ## Initializing the database could take some time
   ##
-  initialDelaySeconds: 120
+  initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 1
   successThreshold: 1
