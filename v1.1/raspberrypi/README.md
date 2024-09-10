@@ -129,7 +129,7 @@ En este caso `mmcblk0` es el microSD y `nvme0n1` es el disco adicional NVMe.
 
 Vamos a particionar el disco de tal formna con lo siguiente:
 
-1. Montaje k3s local-path 800GB.
+1. Montaje k3s local-path 810GB.
 2. Montaje k3s otros. Restante.
 
 ### Comandos
@@ -151,9 +151,9 @@ Select (default p):
 Using default response p.
 Partition number (1-4, default 1): 
 First sector (2048-1953525167, default 2048): 
-Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-1953525167, default 1953525167): +800G
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-1953525167, default 1953525167): +810G
 
-Created a new partition 1 of type 'Linux' and of size 800 GiB.
+Created a new partition 1 of type 'Linux' and of size 810 GiB.
 
 Command (m for help): n
 Partition type
@@ -166,7 +166,7 @@ Partition number (2-4, default 2):
 First sector (1677723648-1953525167, default 1677723648): 
 Last sector, +/-sectors or +/-size{K,M,G,T,P} (1677723648-1953525167, default 1953525167): 
 
-Created a new partition 2 of type 'Linux' and of size 131.5 GiB.
+Created a new partition 2 of type 'Linux' and of size 121.5 GiB.
 
 Command (m for help): w
 The partition table has been altered.
@@ -183,8 +183,8 @@ mmcblk0     179:0    0 119.1G  0 disk
 ├─mmcblk0p1 179:1    0   512M  0 part /boot/firmware
 └─mmcblk0p2 179:2    0 118.6G  0 part /
 nvme0n1     259:0    0 931.5G  0 disk 
-├─nvme0n1p1 259:1    0   800G  0 part 
-└─nvme0n1p2 259:2    0 131.5G  0 part 
+├─nvme0n1p1 259:1    0   810G  0 part 
+└─nvme0n1p2 259:2    0 121.5G  0 part 
 
 ```
 ## 6. Montaje para k3s
@@ -207,7 +207,7 @@ sudo mkfs.ext4 /dev/nvme0n1p2
 
 ```
 sudo xfs_admin -L "K3S_VOLUMES" /dev/nvme0n1p1
-sudo e2label /dev/nvme0n1p2 K3S_SYSTEM
+sudo e2label /dev/nvme0n1p2 VAR_LIB
 ```
 
 #### Editar /etc/fstab
@@ -220,7 +220,7 @@ Agregar esta linea:
 
 ```
 LABEL=K3S_VOLUMES   /var/lib/rancher/k3s/storage    xfs    defaults,nofail 0       2
-LABEL=K3S_SYSTEM   /var/lib/rancher    ext4    defaults,nofail 0       2
+LABEL=VAR_LIB   /var/lib    ext4    defaults,nofail 0       2
 ```
 
 Luego un reboot

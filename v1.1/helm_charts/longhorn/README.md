@@ -73,8 +73,6 @@ Label: **longhorn=true**
 
 Esto es para que el pod de Tailscale que publica el servicio caiga también en los nodos de longhorn. 
 
-File ubicado en `local_dev/`
-
 ```
 kubectl apply -f tailscale.yml
 ```
