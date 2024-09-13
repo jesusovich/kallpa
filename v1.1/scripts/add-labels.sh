@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Array de nodos
-# NODES=("kallpa-master1" "kallpa-master2" "vmi2136897.contaboserver.net")
-NODES=("kallpa-master1" "kallpa-master2" "kallpa-master3")
+NODES=("kallpa-master1" "kallpa-master2" "vmi2136897.contaboserver.net")
+# NODES=("kallpa-master1" "kallpa-master2" "kallpa-master3")
 
 # Labels a aplicar
 LABELS=("nextcloud=true" "longhorn=true" "tailscale-operator=true" "minio-operator=true")
