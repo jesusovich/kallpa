@@ -57,30 +57,6 @@ Aquí se crean los stack.
 - Gateway: `172.25.0.1`
 - Clic en **Create the netwkork**.
 
-## Pihole
-
-### Subir stack
-
-- Ir a **local > Stacks > Add stack**
-- Poner el nombre del stack `pihole`.
-- En **Build method** escoger **Repository**
-- Habilitar Authentication. Poner las credenciales del proyecto. Username: `jesusovich`
-- En Repo: `https://github.com/jesusovich/kallpa`
-- En Compose path poner la ruta. Por ahora en:
-
-```
-v1.2/nextcloud/stacks/pihole/docker-compose.yml
-```
-
-- Damos clic en **Add an environment variable**
-
-```
-key: DATA_PATH
-value: /home/ubuntu
-```
-
-- Finalmente `Deploy the stack`
-
 ## Nginx Proxy Manager
 
 ### Subir stack
@@ -126,6 +102,47 @@ Te pide cambiar las credenciales:
 - Ir a **SSL Certificates > Add SSL Certificate > Custom** 
 - En name `kallpa`
 - Luego cargar los certificados. En **Certificate Key** va `privkey.pem` y en **Certificate** va `cert.pem`.
+
+## Pihole
+
+### Requisitos
+
+- Se debe dar de baja el servicio DNS en ubuntu:
+
+URL: https://discourse.pi-hole.net/t/update-what-to-do-if-port-53-is-already-in-use/52033
+
+Basicamente:
+
+```
+To solve that you need to edit the /etc/systemd/resolved.conf and uncomment DNSStubListener and change it to no, so it looks like this: DNSStubListener=no
+
+After that reboot your system or restart the service with sudo systemctl restart systemd-resolved
+```
+
+### Subir stack
+
+- Ir a **local > Stacks > Add stack**
+- Poner el nombre del stack `pihole`.
+- En **Build method** escoger **Repository**
+- Habilitar Authentication. Poner las credenciales del proyecto. Username: `jesusovich`
+- En Repo: `https://github.com/jesusovich/kallpa`
+- En Compose path poner la ruta. Por ahora en:
+
+```
+v1.2/nextcloud/stacks/pihole/docker-compose.yml
+```
+
+- Damos clic en **Add an environment variable**
+
+```
+key: DATA_PATH
+value: /home/ubuntu
+
+Other Keys:
+- WEBPASSWORD
+```
+
+- Finalmente `Deploy the stack`
 
 ## Nextcloud
 
