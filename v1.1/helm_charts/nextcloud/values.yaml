@@ -541,7 +541,7 @@ service:
   type: LoadBalancer
   port: 80
   loadBalancerIP: ""
-  nodePort: nil
+  nodePort:
   annotations: 
     tailscale.com/expose: "true"
     ## Insert your annotations such as below
