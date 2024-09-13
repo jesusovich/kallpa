@@ -423,7 +423,7 @@ mariadb:
   # see: https://github.com/bitnami/charts/tree/main/bitnami/mariadb#global-parameters
   global:
     # overwrites the primary.persistence.storageClass value
-    defaultStorageClass: ""
+    defaultStorageClass: openebs-hostpath
 
   auth:
     database: nextcloud
@@ -436,7 +436,7 @@ mariadb:
     # secret must contain the keys mariadb-root-password, mariadb-replication-password and mariadb-password
     existingSecret: ""
 
-  architecture: replication
+  architecture: standalone
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
