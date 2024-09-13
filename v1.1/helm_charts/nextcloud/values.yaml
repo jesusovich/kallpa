@@ -390,7 +390,7 @@ externalDatabase:
   type: mysql
 
   ## Database host
-  host: nextcloud-mariadb
+  host: nextcloud-mariadb-primary
 
   ## Database user
   user: nextcloud
@@ -423,7 +423,7 @@ mariadb:
   # see: https://github.com/bitnami/charts/tree/main/bitnami/mariadb#global-parameters
   global:
     # overwrites the primary.persistence.storageClass value
-    defaultStorageClass: longhorn
+    defaultStorageClass: ""
 
   auth:
     database: nextcloud
@@ -446,7 +446,7 @@ mariadb:
       enabled: true
       # Use an existing Persistent Volume Claim (must be created ahead of time)
       existingClaim: ""
-      storageClass: ""
+      storageClass: openebs-hostpath
       accessMode: ReadWriteOnce
       size: 8Gi
 
