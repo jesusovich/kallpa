@@ -390,7 +390,7 @@ externalDatabase:
   type: mysql
 
   ## Database host
-  host: nextcloud-db-mariadb
+  host: nextcloud-mariadb
 
   ## Database user
   user: nextcloud
