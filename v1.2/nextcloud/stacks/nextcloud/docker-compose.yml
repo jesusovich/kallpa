@@ -1,0 +1,85 @@
+services:
+
+  db:
+    image: mariadb:latest
+    container_name: nextcloud_mariadb
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW --log_bin_trust_function_creators=1
+    volumes:
+      - ${DATA_PATH}/nextcloud/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+    networks:
+      - nextcloud-net
+  
+  redis:
+    image: redis:latest
+    container_name: nextcloud_redis
+    restart: unless-stopped
+    networks:
+      - nextcloud-net
+
+  nextcloud_cron:
+    image: nextcloud:latest
+    container_name: nextcloud_cron
+    restart: unless-stopped
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo "*/5 * * * * php -f /var/www/html/cron.php" > /var/spool/cron/crontabs/www-data
+        echo "*/15 * * * * php -f /var/www/html/occ preview:pre-generate" >> /var/spool/cron/crontabs/www-data
+        /cron.sh
+    depends_on:
+      - nextcloud
+    volumes:
+      - ${DATA_PATH}/nextcloud/app:/var/www/html
+    environment:
+      - TZ=America/Bogota
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PHP_UPLOAD_LIMIT=20G
+    networks:
+      - nextcloud-net
+
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: unless-stopped
+    entrypoint:
+      - bash
+      - -c
+      - |
+        apt-get update
+        apt-get install -y ffmpeg
+        /entrypoint.sh apache2-foreground
+    links:
+      - db
+      - redis
+    volumes:
+      - ${DATA_PATH}/nextcloud/app:/var/www/html
+    environment:
+      - TZ=America/Bogota
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PHP_UPLOAD_LIMIT=10G
+    networks:
+      - nextcloud-net
+      - fabric
+
+networks:
+  nextcloud-net:
+    driver: bridge
+  fabric:
+    external: true

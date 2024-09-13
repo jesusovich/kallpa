@@ -1,0 +1,40 @@
+k3s_cluster:
+  children:
+    server:
+      hosts:
+        kallpa-master1:
+          ansible_host: 100.114.106.82
+        kallpa-master2:
+          ansible_host: 100.75.104.44
+        # kallpa-master3:
+        #   ansible_host: 100.125.58.122
+        vmi2136897:
+          ansible_host: 100.101.49.2
+      vars:
+        extra_server_args: >
+          --node-ip {{ ansible_host }}
+          --flannel-iface tailscale0
+          --disable=servicelb
+          --tls-san {{ ansible_host }}
+
+    agent:
+      hosts:
+        # kallpa-worker-1:
+        #   ansible_host: 100.88.225.43
+        # kallpa-worker-2:
+        #   ansible_host: 100.65.248.23
+        # kallpa-worker-3:
+        #   ansible_host: 100.89.43.91
+        # kallpa-worker-4:
+        #   ansible_host: 100.127.67.37
+      vars:
+        extra_agent_args: >
+          --node-ip {{ ansible_host }}
+          --flannel-iface tailscale0
+
+  vars:
+    ansible_port: 22
+    ansible_user: ubuntu
+    k3s_version: v1.30.4+k3s1
+    token: "1nMDEFEhgFdTw9CVl1XAs1cKyEP0X4V9moQXSpjOEU7V0KzBGa4H6Oi0weVBpxwU"
+    api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"

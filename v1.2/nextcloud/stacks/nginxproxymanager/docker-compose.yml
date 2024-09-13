@@ -1,0 +1,21 @@
+---
+services:
+
+  nginxproxymanager:
+    container_name: nginxproxymanager
+    image: jc21/nginx-proxy-manager:latest
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+      - "81:81/tcp"
+    volumes:
+      - ${DATA_PATH}/nginxproxymanager/data:/data
+      - ${DATA_PATH}/nginxproxymanager/etc/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+    networks:
+      fabric:
+        ipv4_address: 172.25.0.250
+
+networks:
+  fabric:
+    external: true

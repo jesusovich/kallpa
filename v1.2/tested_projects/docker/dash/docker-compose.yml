@@ -1,0 +1,21 @@
+services:
+
+  dash:
+    container_name: dash
+    image: mauricenino/dashdot:latest
+    privileged: true
+    ports:
+      - "8081:3001"
+    environment:
+      - DASHDOT_SHOW_HOST=true
+      - DASHDOT_CUSTOM_HOST=hp-server
+      - DASHDOT_ALWAYS_SHOW_PERCENTAGES=true
+      - DASHDOT_ENABLE_CPU_TEMPS=true
+    #  - DASHDOT_OVERRIDE_CPU_BRAND=Broadcom TBD
+    #  - DASHDOT_OVERRIDE_RAM_BRAND=Micron TBD
+    #  - DASHDOT_OVERRIDE_RAM_TYPE=LPDDR4X TBD
+    #  - DASHDOT_OVERRIDE_RAM_FREQUENCY=4267 TBD
+    #  - DASHDOT_OVERRIDE_STORAGE_BRANDS=mmcblk0=SanDisk TBD
+    restart: unless-stopped
+    volumes:
+      - /:/mnt/host:ro
