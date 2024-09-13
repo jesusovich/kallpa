@@ -1,0 +1,30 @@
+---
+services:
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    environment:
+      TZ: 'America/Bogota'
+      WEBPASSWORD: ${WEBPASSWORD}
+      DNSMASQ_LISTENING: 'all'
+    volumes:
+      - ${DATA_PATH}/pihole/etc-pihole:/etc/pihole
+      - ${DATA_PATH}/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      - fabric
+
+networks:
+  fabric:
+    external: true
+
+
+# Something to check in order to work with Tailscale:
+
+# https://www.reddit.com/r/Tailscale/comments/15g0mr4/is_override_local_dns_not_working/

@@ -1,0 +1,15 @@
+---
+services:
+
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    volumes:
+      - ${DATA_PATH}/vaultwarden/data:/data
+    restart: unless-stopped
+    networks:
+      - fabric
+
+networks:
+  fabric:
+    external: true

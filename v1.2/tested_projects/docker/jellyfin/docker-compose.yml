@@ -1,0 +1,18 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    volumes:
+      - ${DATA_PATH}/jellyfin/config:/config
+      - ${DATA_PATH}/jellyfin/cache:/cache
+      - type: bind
+        source: ${DATA_PATH}/nextcloud/app/data/aapestegui/files/Movies
+        target: /media
+        read_only: true
+    restart: unless-stopped
+    networks:
+      - fabric
+
+networks:
+  fabric:
+    external: true

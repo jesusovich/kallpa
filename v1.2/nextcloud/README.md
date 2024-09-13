@@ -57,6 +57,30 @@ Aquí se crean los stack.
 - Gateway: `172.25.0.1`
 - Clic en **Create the netwkork**.
 
+## Pihole
+
+### Subir stack
+
+- Ir a **local > Stacks > Add stack**
+- Poner el nombre del stack `pihole`.
+- En **Build method** escoger **Repository**
+- Habilitar Authentication. Poner las credenciales del proyecto. Username: `jesusovich`
+- En Repo: `https://github.com/jesusovich/kallpa`
+- En Compose path poner la ruta. Por ahora en:
+
+```
+v1.2/nextcloud/stacks/pihole/docker-compose.yml
+```
+
+- Damos clic en **Add an environment variable**
+
+```
+key: DATA_PATH
+value: /home/ubuntu
+```
+
+- Finalmente `Deploy the stack`
+
 ## Nginx Proxy Manager
 
 ### Subir stack
@@ -97,6 +121,12 @@ Te pide cambiar las credenciales:
 - Email: `invitados.pjesusovich@gmail.com`
 - New Pass: **En Bitbwarden.**
 
+### Cargar certificado Kallpa
+
+- Ir a **SSL Certificates > Add SSL Certificate > Custom** 
+- En name `kallpa`
+- Luego cargar los certificados. En **Certificate Key** va `privkey.pem` y en **Certificate** va `cert.pem`.
+
 ## Nextcloud
 
 ### Subir stack
@@ -126,3 +156,8 @@ Other Keys:
 ```
 
 - Finalmente `Deploy the stack`
+
+### Crear Host en Nginx Proxy Manager
+
+- Ir a **Hosts > Proxy Hosts > Add Proxy Host**
+- Pendiente de Pihole

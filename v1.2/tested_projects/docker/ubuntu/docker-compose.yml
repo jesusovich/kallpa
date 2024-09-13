@@ -1,0 +1,8 @@
+version: '3'
+services:
+  ubuntu:
+    image: ubuntu:latest  # Usa la imagen base de Ubuntu
+    container_name: ubuntu_server
+    # volumes:
+    #   - ${DATA_PATH}:/scripts  # Montar un volumen desde la Raspberry Pi al contenedor
+    tty: true
