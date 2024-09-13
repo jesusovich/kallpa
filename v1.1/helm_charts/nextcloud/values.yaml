@@ -390,7 +390,7 @@ externalDatabase:
   type: mysql
 
   ## Database host
-  host: nextcloud-db-mariadb-galera
+  host: nextcloud-db-mariadb
 
   ## Database user
   user: nextcloud
@@ -418,12 +418,12 @@ mariadb:
   ## Whether to deploy a mariadb server from the bitnami mariab db helm chart
   # to satisfy the applications database requirements. if you want to deploy this bitnami mariadb, set this and externalDatabase to true
   # To use an ALREADY DEPLOYED mariadb database, set this to false and configure the externalDatabase parameters
-  enabled: false
+  enabled: true
 
   # see: https://github.com/bitnami/charts/tree/main/bitnami/mariadb#global-parameters
   global:
     # overwrites the primary.persistence.storageClass value
-    defaultStorageClass: longhorn
+    defaultStorageClass: openebs-hostpath
 
   auth:
     database: nextcloud
@@ -496,7 +496,7 @@ redis:
     existingSecretPasswordKey: ""
   # Since Redis is used for caching only, you might want to use a storageClass with different reclaim policy and backup settings
   global:
-    storageClass: longhorn
+    storageClass: openebs-hostpath
   master:
     persistence:
       enabled: true
@@ -568,7 +568,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  accessMode: ReadWriteMany
+  accessMode: ReadWriteOnce
   size: 8Gi
 
   ## Use an additional pvc for the data directory rather than a subpath of the default PVC
