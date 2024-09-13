@@ -18,7 +18,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
-  defaultStorageClass: longhorn
+  defaultStorageClass: openebs-hostpath
   storageClass: ""
   ## Compatibility adaptations for Kubernetes platforms
   ##

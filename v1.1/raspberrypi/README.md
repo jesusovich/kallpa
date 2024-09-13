@@ -130,8 +130,9 @@ En este caso `mmcblk0` es el microSD y `nvme0n1` es el disco adicional NVMe.
 Vamos a particionar el disco de tal formna con lo siguiente:
 
 1. Montaje k3s 120GB.
-2. Montaje Longhorn 100GB.
-2. Montaje Minio Restante.
+2. Montaje Longhorn 20GB.
+3. Montaje Openebs 80GB.
+4. Montaje Minio Restante.
 
 ### Comandos
 
@@ -143,15 +144,7 @@ Ahora los discos deberían verse así:
 
 ```
 ubuntu@kallpa-master1:~$ lsblk
-NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-loop0         7:0    0  33.7M  1 loop /snap/snapd/21761
-mmcblk0     179:0    0 119.1G  0 disk 
-├─mmcblk0p1 179:1    0   512M  0 part /boot/firmware
-└─mmcblk0p2 179:2    0 118.6G  0 part /
-nvme0n1     259:0    0 931.5G  0 disk 
-├─nvme0n1p1 259:1    0   120G  0 part 
-├─nvme0n1p2 259:2    0   100G  0 part 
-└─nvme0n1p3 259:3    0 711.5G  0 part 
+TBD
 
 ```
 ## 6. Montaje para k3s
@@ -160,7 +153,8 @@ nvme0n1     259:0    0 931.5G  0 disk
 
 - k3s guarda los archivos de configuración, data y backend etcd en `/var/lib/rancher`. Usaremos la partición `nvme0n1p1`para ello.
 - Loghorn utiliza `/var/lib/longhorn`. Usaremos la partición `nvme0n1p2`para ello.
-- k3s local-path guarda los PV's en `/var/lib/rancher/storage`. Usaremos la partición `nvme0n1p3`para ello.
+- Openebs utiliza `/var/openebs`. Usaremos la partición `nvme0n1p3`para ello.
+- k3s local-path guarda los PV's en `/var/lib/rancher/storage`. Usaremos la partición `nvme0n1p4`para ello.
 
 ### Montaje
 
@@ -169,7 +163,8 @@ nvme0n1     259:0    0 931.5G  0 disk
 ```
 sudo mkfs.ext4 /dev/nvme0n1p1
 sudo mkfs.ext4 /dev/nvme0n1p2
-sudo mkfs.xfs /dev/nvme0n1p3
+sudo mkfs.ext4 /dev/nvme0n1p3
+sudo mkfs.xfs /dev/nvme0n1p4
 ```
 
 #### Crear Label
@@ -177,7 +172,8 @@ sudo mkfs.xfs /dev/nvme0n1p3
 ```
 sudo e2label /dev/nvme0n1p1 K3S_SYSTEM
 sudo e2label /dev/nvme0n1p2 LONGHORN
-sudo xfs_admin -L "K3S_VOLUMES" /dev/nvme0n1p3
+sudo e2label /dev/nvme0n1p3 OPENEBS
+sudo xfs_admin -L "K3S_VOLUMES" /dev/nvme0n1p4
 ```
 
 #### Editar /etc/fstab
@@ -192,6 +188,7 @@ Agregar esta linea:
 LABEL=K3S_VOLUMES   /var/lib/rancher/k3s/storage    xfs    defaults,nofail 0       2
 LABEL=K3S_SYSTEM   /var/lib/rancher    ext4    defaults,nofail 0       2
 LABEL=LONGHORN   /var/lib/longhorn    ext4    defaults,nofail 0       2
+LABEL=OPENEBS   /var/openebs    ext4    defaults,nofail 0       2
 ```
 
 Luego un reboot
