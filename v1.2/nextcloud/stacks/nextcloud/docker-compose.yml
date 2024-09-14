@@ -62,6 +62,7 @@ services:
       - TZ=America/Bogota
       - NEXTCLOUD_ADMIN_USER=admin
       - NEXTCLOUD_ADMIN_PASSWORD=changeme
+      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.kallpa.xyz
       - MYSQL_PASSWORD=nextcloud
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
