@@ -1,0 +1,148 @@
+services:
+  app:
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    user: ${UID}:${GID}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./nextcloud.env
+    secrets:
+      - postgres_db
+      - postgres_password
+      - postgres_user
+      - nextcloud_admin_user
+      - nextcloud_admin_password
+    volumes:
+      - ./nextcloud:/var/www/html
+      - ./apps:/var/www/html/custom_apps
+      - ./data:/var/www/html/data
+      - ./config:/var/www/html/config
+      # https://github.com/nextcloud/docker/issues/182
+      - ./redis-session.ini:/usr/local/etc/php/conf.d/redis-session.ini
+      - ./remoteip.conf:/etc/apache2/conf-available/remoteip.conf:ro
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web-secure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.priority=1             # for notify_push
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`) # Nextcloud public FQDN
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=secHeaders3@file,nextcloud-redirect@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80
+    networks:
+      - proxy
+      - default
+
+  notify_push:
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    restart: unless-stopped
+    user: ${UID}:${GID}
+    depends_on:
+      - app
+    environment:
+      - PORT=7867
+      - NEXTCLOUD_URL=http://app        # don't go through the proxy to contact the nextcloud server
+    entrypoint: /var/www/html/custom_apps/notify_push/bin/x86_64/notify_push /var/www/html/config/config.php
+    volumes:
+      - ./apps:/var/www/html/custom_apps
+      - ./config:/var/www/html/config
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_notify_push.entryPoints=web-secure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_notify_push.priority=2
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_notify_push.middlewares=nextcloud_strip_push
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_notify_push.tls.certresolver=letsencryptresolver
+      # necessary for the notify_push app to work:
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_notify_push.rule=Host(`${DOMAIN}`) && PathPrefix(`/push`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_notify_push.middlewares=nextcloud_striprefix_push@file
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}_notify_push.loadbalancer.server.port=7867
+    networks:
+      - proxy
+      - default
+
+  cron:
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    restart: unless-stopped
+    # special UID handling https://github.com/nextcloud/docker/issues/1740
+    environment:
+      - UID=${UID}
+    depends_on:
+      - app
+    env_file:
+      - ./nextcloud.env
+    volumes:
+      - ./nextcloud:/var/www/html
+      - ./apps:/var/www/html/custom_apps
+      - ./data:/var/www/html/data
+      - ./config:/var/www/html/config
+      - ./cron.sh:/cron.sh
+    entrypoint: /cron.sh
+
+  db:
+    # https://hub.docker.com/_/postgres
+    image: postgres:15
+    restart: unless-stopped
+    user: ${UID}:${GID}
+    volumes:
+      - ./db:/var/lib/postgresql/data
+      - /etc/passwd:/etc/passwd:ro
+    environment:
+      - POSTGRES_DB_FILE=/run/secrets/postgres_db
+      - POSTGRES_USER_FILE=/run/secrets/postgres_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d `cat $$POSTGRES_DB_FILE` -U `cat $$POSTGRES_USER_FILE`"]
+      start_period: 15s
+      interval: 30s
+      retries: 3
+      timeout: 5s
+    secrets:
+      - postgres_db
+      - postgres_password
+      - postgres_user
+
+  redis:
+    image: redis:bookworm
+    restart: unless-stopped
+    # doesn't work so far :(
+	  #user: ${UID}:${GID}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 10s
+      interval: 30s
+      retries: 3
+      timeout: 3s
+
+  imaginary:
+    image: nextcloud/aio-imaginary:latest
+    restart: unless-stopped
+    user: ${UID}:${GID}
+    expose:
+      - "9000"
+    depends_on:
+      - app	  
+    #environment:
+    #  - TZ=${TIMEZONE} # e.g. Europe/Berlin
+    cap_add:
+      - SYS_NICE
+    tmpfs:
+      - /tmp
+networks:
+  proxy:
+    external: true
+
+secrets:
+  nextcloud_admin_password:
+    file: ./secrets/nextcloud_admin_password # put admin password in this file
+  nextcloud_admin_user:
+    file: ./secrets/nextcloud_admin_user     # put admin username in this file
+  postgres_db:
+    file: ./secrets/postgres_db              # put postgresql db name in this file
+  postgres_password:
+    file: ./secrets/postgres_password        # put postgresql password in this file
+  postgres_user:
+    file: ./secrets/postgres_user            # put postgresql username in this file

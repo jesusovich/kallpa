@@ -1,0 +1,85 @@
+services:
+
+  nextcloud:
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    container_name: nextcloud
+    entrypoint:
+      - bash
+      - -c
+      - |
+        apt-get update
+        apt-get install -y ffmpeg
+        /entrypoint.sh apache2-foreground
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./nextcloud.env
+    volumes:
+      - ${DATA_PATH}/nextcloud/app:/var/www/html
+    restart: unless-stopped
+    networks:
+      - nextcloud-net
+      - fabric
+
+  db:
+    image: mariadb:latest
+    container_name: nextcloud_mariadb
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW --log_bin_trust_function_creators=1
+    volumes:
+      - ${DATA_PATH}/nextcloud/db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 30s
+      retries: 3
+      timeout: 5s
+    networks:
+      - nextcloud-net
+  
+  redis:
+    image: redis:latest
+    container_name: nextcloud_redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 10s
+      interval: 30s
+      retries: 3
+      timeout: 3s
+    networks:
+      - nextcloud-net
+
+  nextcloud_cron:
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    container_name: nextcloud_cron
+    restart: unless-stopped
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo "*/5 * * * * php -f /var/www/html/cron.php" > /var/spool/cron/crontabs/www-data
+        echo "*/15 * * * * php -f /var/www/html/occ preview:pre-generate" >> /var/spool/cron/crontabs/www-data
+        /cron.sh
+    depends_on:
+      - nextcloud
+    env_file:
+      - ./nextcloud.env
+    volumes:
+      - ${DATA_PATH}/nextcloud/app:/var/www/html
+    networks:
+      - nextcloud-net
+
+networks:
+  nextcloud-net:
+    driver: bridge
+  fabric:
+    external: true

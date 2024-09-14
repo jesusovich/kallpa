@@ -1,5 +1,46 @@
 services:
 
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: unless-stopped
+    entrypoint:
+      - bash
+      - -c
+      - |
+        apt-get update
+        apt-get install -y ffmpeg
+        /entrypoint.sh apache2-foreground
+    links:
+      - db
+      - redis
+    volumes:
+      - ${DATA_PATH}/nextcloud/app:/var/www/html
+    environment:
+      - TZ=America/Bogota
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=changeme
+      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.kallpa.xyz
+      - MYSQL_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PHP_UPLOAD_LIMIT=10G
+      - OBJECTSTORE_S3_BUCKET=true
+      - OBJECTSTORE_S3_SSL=false
+      - OBJECTSTORE_S3_USEPATH_STYLE=true
+      - OBJECTSTORE_S3_AUTOCREATE=false
+      - OBJECTSTORE_S3_BUCKET=nextcloud
+      - OBJECTSTORE_S3_HOST=minio-tenant1-minio.mist-decibel.ts.net
+      - OBJECTSTORE_S3_PORT=80
+      - OBJECTSTORE_S3_KEY=nextcloud
+      - OBJECTSTORE_S3_SECRET=nextcloud
+    networks:
+      - nextcloud-net
+      - fabric
+
   db:
     image: mariadb:latest
     container_name: nextcloud_mariadb
@@ -41,48 +82,6 @@ services:
       - TZ=America/Bogota
     networks:
       - nextcloud-net
-
-  nextcloud:
-    image: nextcloud:latest
-    container_name: nextcloud
-    restart: unless-stopped
-    entrypoint:
-      - bash
-      - -c
-      - |
-        apt-get update
-        apt-get install -y ffmpeg
-        /entrypoint.sh apache2-foreground
-    links:
-      - db
-      - redis
-    volumes:
-      - ${DATA_PATH}/nextcloud/app:/var/www/html
-    environment:
-      - TZ=America/Bogota
-      - NEXTCLOUD_ADMIN_USER=admin
-      - NEXTCLOUD_ADMIN_PASSWORD=changeme
-      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.kallpa.xyz
-      - MYSQL_PASSWORD=nextcloud
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=db
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - PHP_UPLOAD_LIMIT=10G
-      - OBJECTSTORE_S3_BUCKET=true
-      - OBJECTSTORE_S3_SSL=false
-      - OBJECTSTORE_S3_USEPATH_STYLE=true
-      - OBJECTSTORE_S3_AUTOCREATE=false
-      - OBJECTSTORE_S3_BUCKET=nextcloud
-      - OBJECTSTORE_S3_HOST=minio-tenant1-minio.mist-decibel.ts.net
-      - OBJECTSTORE_S3_PORT=80
-      - OBJECTSTORE_S3_KEY=nextcloud
-      - OBJECTSTORE_S3_SECRET=nextcloud
-
-    networks:
-      - nextcloud-net
-      - fabric
 
 networks:
   nextcloud-net:
