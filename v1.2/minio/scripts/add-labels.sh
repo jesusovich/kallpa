@@ -7,7 +7,7 @@ NODES=("kallpa-master1" "kallpa-master2")
 
 # Labels a aplicar
 # LABELS=("nextcloud=true" "longhorn=true" "tailscale-operator=true" "minio-operator=true")
-LABELS=("tailscale-operator=true" "minio-operator=true")
+LABELS=("tailscale-operator=true" "minio-operator=true" "minio-tenant1=true")
 
 # Iterar sobre cada nodo
 for NODE in "${NODES[@]}"; do
