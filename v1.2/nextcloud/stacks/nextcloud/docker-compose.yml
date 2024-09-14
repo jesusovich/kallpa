@@ -74,6 +74,13 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - PHP_UPLOAD_LIMIT=10G
+      - OBJECTSTORE_S3_BUCKET=true
+      - OBJECTSTORE_S3_SSL=false
+      - OBJECTSTORE_S3_USEPATH_STYLE=true
+      - OBJECTSTORE_S3_AUTOCREATE=false
+      - OBJECTSTORE_S3_BUCKET=nextcloud
+      - OBJECTSTORE_S3_HOST=minio
+      - OBJECTSTORE_S3_PORT=9090
     networks:
       - nextcloud-net
       - fabric

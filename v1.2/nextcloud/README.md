@@ -144,6 +144,17 @@ Other Keys:
 
 - Finalmente `Deploy the stack`
 
+### Acceso:
+
+URL: http://207.244.230.243:8081/admin
+
+### Agregar DNS a Tailscale
+
+- En tailscale. Ir a **DNS > Add nameserver > Custom...**
+- Poner la IP de la VM, localizarla en machines.
+- habilitar **Override local DNS**.
+
+
 ## Nextcloud
 
 ### Subir stack
@@ -174,7 +185,36 @@ Other Keys:
 
 - Finalmente `Deploy the stack`
 
+### Registrar dominio en Pihole
+
+- En Pihole, ir a **Local DNS > DNS Records**
+- Agregar el dominio con la IP del host
+
+```
+Domain: nextcloud.kallpa.xyz
+IP address: 207.244.230.243
+```
+
+- Clic en **Add**.
+
+
 ### Crear Host en Nginx Proxy Manager
 
 - Ir a **Hosts > Proxy Hosts > Add Proxy Host**
-- Pendiente de Pihole
+- Agregar los siguientes datos:
+
+```
+Domain Names: nextcloud.kallpa.xyz
+Puerto: 80
+Forward Hostname: nextcloud
+Block Common Exploits: enable
+Websockets Support: enable
+SSL: kallpa
+Habilitar todo los adicionales.
+```
+
+### Acceso a nextcloud
+
+- Entrar a la URL: https://nextcloud.kallpa.xyz
+- Por primera vez te pide crear un usuario admin.
+- Credenciales en bitwarden.
