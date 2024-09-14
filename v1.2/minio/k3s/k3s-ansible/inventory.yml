@@ -6,10 +6,10 @@ k3s_cluster:
           ansible_host: 100.114.106.82
         kallpa-master2:
           ansible_host: 100.75.104.44
-        # kallpa-master3:
-        #   ansible_host: 100.125.58.122
-        vmi2136897:
-          ansible_host: 100.101.49.2
+        kallpa-master3:
+          ansible_host: 100.125.58.122
+        # vmi2136897:
+        #   ansible_host: 100.101.49.2
       vars:
         extra_server_args: >
           --node-ip {{ ansible_host }}
