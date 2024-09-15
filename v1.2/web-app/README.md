@@ -111,8 +111,23 @@ Con eso obtendremos el nombre de dominio `nextcloud.kallpa.xyz`
 
 Estábamos usando Stacks de Portainer para ello, pero mejor vamos a deployarlo directamente.
 
+- Clonar repo
 
+```
+git clone https://github.com/jesusovich/kallpa.git
+```
 
+- copiar .env al repo local, no está subido en github, pendiente de ver dónde guardo esta info fuente de verdad.
+- Levantar el ambiente con:
+
+```
+docker compose up -d
+```
+- configurar parametros adicionales.
+
+```
+./post-install.sh
+```
 ### Crear Host en Nginx Proxy Manager
 
 - Ir a **Hosts > Proxy Hosts > Add Proxy Host**
