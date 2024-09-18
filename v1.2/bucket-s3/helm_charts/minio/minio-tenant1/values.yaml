@@ -466,7 +466,8 @@ ingress:
     enabled: true
     ingressClassName: tailscale
     labels: { }
-    annotations: { }
+    annotations:
+      tailscale.com/funnel: "true"
     tls:
       - hosts:
           - minio-tenant1-console-test
