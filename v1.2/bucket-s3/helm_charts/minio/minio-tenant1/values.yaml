@@ -293,7 +293,7 @@ tenant:
   # Both fields default to ``false``.
   exposeServices:
     minio: true
-  #  console: true
+    console: true
   ###
   # The `Kubernetes Service Account <https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/>`__ associated with the Tenant.
   serviceAccountName: ""
@@ -318,8 +318,8 @@ tenant:
   # serviceMetadata allows passing additional labels and annotations to MinIO and Console specific
   # services created by the operator.
   serviceMetadata:
-    # consoleServiceAnnotations:
-    #   tailscale.com/expose: "true"
+    consoleServiceAnnotations:
+      tailscale.com/expose: "true"
     minioServiceAnnotations:
       tailscale.com/expose: "true"
     # consoleServiceLabels:
