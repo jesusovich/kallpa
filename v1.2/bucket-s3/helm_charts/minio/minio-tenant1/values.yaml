@@ -463,11 +463,13 @@ ingress:
     path: /
     pathType: Prefix
   console:
-    enabled: false
-    ingressClassName: ""
+    enabled: true
+    ingressClassName: tailscale
     labels: { }
     annotations: { }
-    tls: [ ]
+    tls: :
+      - hosts:
+          - minio-tenant1-console-test
     host: minio-console.local
     path: /
     pathType: Prefix
