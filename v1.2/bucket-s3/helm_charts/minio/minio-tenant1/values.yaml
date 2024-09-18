@@ -467,7 +467,7 @@ ingress:
     ingressClassName: tailscale
     labels: { }
     annotations: { }
-    tls: :
+    tls:
       - hosts:
           - minio-tenant1-console-test
     host: minio-console.local
